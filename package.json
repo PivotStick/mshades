@@ -1,6 +1,6 @@
 {
 	"name": "myshades",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Generate css variable colors from tailwind palettes",
 	"type": "module",
 	"files": [
