@@ -1,7 +1,7 @@
-const chroma = require("chroma-js");
-const { findClosestColor } = require("./findClosestColor");
+import chroma from "chroma-js";
+import { findClosestColor } from "./findClosestColor";
 
-exports.generateTailwindColorFamily = (hexcode, referenceColors) => {
+export const generateTailwindColorFamily = (hexcode, referenceColors) => {
 	const closestColorFamily = findClosestColor(hexcode, referenceColors);
 
 	let inputHue = chroma(hexcode).get("hsl.h");
@@ -23,7 +23,7 @@ exports.generateTailwindColorFamily = (hexcode, referenceColors) => {
 
 	return closestColorFamily.shades.map((color) => {
 		let newColor = color.hexcode;
-		let newSaturation = (chroma(newColor).get("hsl.s") * saturationRatio || 1);
+		let newSaturation = chroma(newColor).get("hsl.s") * saturationRatio || 1;
 
 		newColor = chroma(newColor).set("hsl.s", newSaturation).hex();
 		newColor = chroma(newColor).set("hsl.h", hueDifference).hex();

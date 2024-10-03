@@ -1,10 +1,10 @@
-const chroma = require("chroma-js");
+import chroma from "chroma-js";
 
 /**
  * @param {string} hexcode
  * @param {typeof import("./tailwind3").tailwindColors3} referenceColors
  */
-exports.findClosestColor = (hexcode, referenceColors) => {
+export const findClosestColor = (hexcode, referenceColors) => {
 	// Add DELTA key / value to array of objects
 	referenceColors.forEach((color) => {
 		color.shades = color.shades.map((shade) => ({
@@ -31,8 +31,8 @@ exports.findClosestColor = (hexcode, referenceColors) => {
 		lightnessDiff: Math.abs(chroma(shade.hexcode).get("hsl.l") - chroma(hexcode).get("hsl.l"))
 	}));
 
-	closestColorFamily.closestShadeLightness = closestColorFamily.shades.reduce((previous, current) =>
-		previous.lightnessDiff < current.lightnessDiff ? previous : current
+	closestColorFamily.closestShadeLightness = closestColorFamily.shades.reduce(
+		(previous, current) => (previous.lightnessDiff < current.lightnessDiff ? previous : current)
 	);
 
 	return closestColorFamily;

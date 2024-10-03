@@ -1,4 +1,4 @@
-exports.tailwindColors3 = [
+export const tailwindColors3 = [
 	{
 		name: "Slate",
 		id: "slate",

@@ -1,62 +1,29 @@
-const { join } = require("path");
-const { writeFile } = require("fs").promises;
-const { generateTailwindColorFamily } = require("./functions/generateTailwindColorFamily");
-const { tailwindColors3 } = require("./colors/tailwind3");
+import { generateTailwindColorFamily } from "./functions/generateTailwindColorFamily";
+import { tailwindColors3 } from "./colors/tailwind3";
 
-exports.generate = (hex = chroma.random(), referenceColors = tailwindColors3) =>
+export const generate = (hex = chroma.random(), referenceColors = tailwindColors3) =>
 	generateTailwindColorFamily(hex, referenceColors);
 
 /**
- * @param {Record<string, string>} args
- * @returns {Promise<import("vite").Plugin>}
+ * @param {Record<string, string>} palettes
  */
-exports.myshades = async (args = {}) => {
-	return {
-		name: "tailwind-palettes-generator",
-		async config(config) {
-			let scss = ":root {\n";
-			let keys = Object.entries(args);
-			let [defaultPalette] = keys[0] || [];
+export const myshades = (palettes = {}) => {
+	const keys = Object.entries(palettes);
+	const variables = {};
 
-			for (const [key, hex] of keys) {
-				const shades = generateTailwindColorFamily(hex, tailwindColors3);
+	for (const [key, hex] of keys) {
+		const shades = generateTailwindColorFamily(hex, tailwindColors3);
 
-				shades.forEach((shade) => {
-					scss += `\t--${key}-${shade.number}: ${shade.hexcode};\n`;
-				});
-
-				scss += "\n";
-
-				shades.forEach((shade) => {
-					scss += `\t--on-${key}-${shade.number}: ${
-						shade.luminance < 40 ? `var(--${key}-100)` : `var(--${key}-900)`
-					};\n`;
-				});
-
-				scss += "\n";
-			}
-
-			scss += "\n}\n\n";
-
-			for (const [key, hex] of keys) {
-				const shades = generateTailwindColorFamily(hex, tailwindColors3);
-
-				scss += `${key === defaultPalette ? `:root,\n.${key}` : `.${key}`} {\n`;
-
-				shades.forEach((shade) => {
-					scss += `\t--color-${shade.number}: var(--${key}-${shade.number});\n`;
-				});
-
-				scss += "\n";
-
-				shades.forEach((shade) => {
-					scss += `\t--on-color-${shade.number}: var(--on-${key}-${shade.number});\n`;
-				});
-
-				scss += "}\n\n";
-			}
-
-			await writeFile(join(config.root, "src/_palettes.scss"), scss);
+		// Loop two time to have them in correct order
+		for (const shade of shades) {
+			variables[`--${key}-${shade.number}`] = shade.hexcode;
 		}
-	};
+
+		for (const shade of shades) {
+			variables[`--on-${key}-${shade.number}`] =
+				shade.luminance < 40 ? `var(--${key}-100)` : `var(--${key}-900)`;
+		}
+	}
+
+	return variables;
 };
