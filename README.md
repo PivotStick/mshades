@@ -1,27 +1,3 @@
-This vite plugin will generate shades for any given hex color
-
-## In your Vite project...
-
-```js
-import { sveltekit } from "@sveltejs/kit/vite";
-import { myshades } from "myshades";
-
-/** @type {import('vite').UserConfig} */
-const config = {
-	plugins: [
-		sveltekit(),
-		myshades({
-			primary: "#f0f2ee", // The first key is the default color
-			danger: "#ff0000"
-		})
-	]
-};
-
-export default config;
-```
-
-## And now in your css...
-
 ```html
 <!-- This button will use the default palette which is the "primary" palette in this case -->
 <button>My Button</button>
